@@ -13,6 +13,6 @@ form{
     left: 30%;
 	top: 30%;
 }
-.btn_submit{
+#btn_submit{
 	width: 100px;
 }

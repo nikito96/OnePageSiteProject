@@ -3,64 +3,44 @@
 	<head>
 		<title>Index page</title>
 		<link rel="stylesheet" type="text/css" href="style.css">
+		<script
+			  src="https://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
+		<script type="text/javascript" src="script.js"></script>
 	</head>
-	<body>
+	<body onload="readDB()">
 		<div class="mainBox" action="" method="get">
 		<form>
-			<input type="text" value="<?php echo $last_post; ?>"><input type="submit" value="Edit"><input type="submit" value="delete">
+			<input type="text" value=""><input type="submit" value="Edit"><input type="submit" value="delete">
 			<br>
 			<br>
 			<br>
 		</form>
 		<form action="post.php" method="get">
-			<input type="text" name="post"><input type="submit" value="post" class="btn_submit">
+			<input type="text" name="post"><input type="submit" value="post" id="btn_submit">
 		</form>
 		</div>
-		
-		<!--<?php
-			echo "<table style='border: solid 1px black;'>";
-			echo "<tr><th>Id</th><th>Post</th><th>Date and time:</th></tr>";
-
-			class TableRows extends RecursiveIteratorIterator {
-				function __construct($it) {
-					parent::__construct($it, self::LEAVES_ONLY);
-				}
-
-				function current() {
-					return "<td style='width:150px;border:1px solid black;'>" . parent::current(). "</td>";
-				}
-
-				function beginChildren() {
-					echo "<tr>";
-				}
-
-				function endChildren() {
-					echo "</tr>" . "\n";
-				}
+		<div id="readDB"></div>
+		</div>
+		<script>
+			function readDB(){
+				$.ajax({
+					type:"GET",
+					url:"readDB.php",
+					success: function(result){
+						result = JSON.parse(result);
+						
+						let leng = result.length;
+						for (let i = 0; i < leng; i++) {
+							let id = result['ID'];
+							let post = result[i]['post'];
+							let date = result[i]['dateAndTime'];
+							$('#readDB').append('<div id="post"> ' + post + ' ' + date + '</div>');
+						}
+					}
+				});
 			}
-
-			$servername = "localhost";
-			$username = "root";
-			$password = "";
-			$dbname = "posts";
-
-			try {
-				$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-				$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-				$stmt = $conn->prepare("select post, dateAndTime from posts");
-				$stmt->execute();
-
-				// set the resulting array to associative
-				$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-				foreach(new TableRows(new RecursiveArrayIterator($stmt->fetchAll())) as $k=>$v) {
-					echo $v;
-				}
-			}
-			catch(PDOException $e) {
-				echo "Error: " . $e->getMessage();
-			}
-			$conn = null;
-			echo "</table>";
-		?>-->
+		</script>
 	</body>
 </html>
